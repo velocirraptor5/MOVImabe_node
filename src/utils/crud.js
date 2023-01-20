@@ -1,7 +1,7 @@
 export const getOne = model => async (req, res) => {
   try {
     const doc = await model
-      .findOne({ createdBy: req.user._id, _id: req.params.id })
+      .findOne({ _id: req.params.id })
       .lean()
       .exec()
 
@@ -19,7 +19,7 @@ export const getOne = model => async (req, res) => {
 export const getMany = model => async (req, res) => {
   try {
     const docs = await model
-      .find({ createdBy: req.user._id })
+      .find()
       .lean()
       .exec()
 
@@ -43,12 +43,13 @@ export const createOne = model => async (req, res) => {
 
 export const updateOne = model => async (req, res) => {
   try {
+    const charmander = req.user.role === 'charmander'
+    const search = charmander ?
+      { _id: req.params.id } :
+      { _id: req.params.id, createdBy: req.user._id }
     const updatedDoc = await model
       .findOneAndUpdate(
-        {
-          createdBy: req.user._id,
-          _id: req.params.id
-        },
+        search,
         req.body,
         { new: true }
       )
@@ -56,31 +57,32 @@ export const updateOne = model => async (req, res) => {
       .exec()
 
     if (!updatedDoc) {
-      return res.status(400).end()
+      return res.status(400).send({ message: 'Error updating ' })
     }
 
     res.status(200).json({ data: updatedDoc })
   } catch (e) {
     console.error(e)
-    res.status(400).end()
+    res.status(400).send({ message: e.message })
   }
 }
 
 export const removeOne = model => async (req, res) => {
   try {
-    const removed = await model.findOneAndRemove({
-      createdBy: req.user._id,
-      _id: req.params.id
-    })
+    const charmander = req.user.role === 'charmander'
+    const search = charmander ?
+      { _id: req.params.id } :
+      { _id: req.params.id, createdBy: req.user._id }
+    const removed = await model.findOneAndRemove(search).exec()
 
     if (!removed) {
-      return res.status(400).end()
+      return res.status(400).send({ message: 'Error deleting' })
     }
 
     return res.status(200).json({ data: removed })
   } catch (e) {
     console.error(e)
-    res.status(400).end()
+    res.status(400).send({ message: e.message })
   }
 }
 
