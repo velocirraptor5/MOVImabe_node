@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getUser, getUserFeedBacks, me, updateMe } from './user.controllers'
+import { getUser, me, updateMe } from './user.controllers'
 
 const router = Router()
 
@@ -11,10 +11,5 @@ router.put('/', updateMe)
 router
   .route('/:nikname')
   .get(getUser)
-
-// get users feedBacks
-router
-  .route('/:nikname/feedBacks')
-  .get(getUserFeedBacks)
 
 export default router

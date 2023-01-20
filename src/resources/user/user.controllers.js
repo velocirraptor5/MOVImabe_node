@@ -48,7 +48,7 @@ export const getUser = async (req, res) => {
       .exec()
 
     if (!user) {
-      return res.status(400).end()
+      return res.status(400).send({ message: 'User not found' })
     }
 
     // remove password and settings from user
@@ -58,24 +58,6 @@ export const getUser = async (req, res) => {
     res.status(200).json({ data: user })
   } catch (e) {
     console.error(e)
-    res.status(400).end()
-  }
-}
-
-// get users feedBacks
-export const getUserFeedBacks = async (req, res) => {
-  try {
-    const user = await User.findOne({ nikname: req.params.nikname })
-      .lean()
-      .exec()
-
-    if (!user) {
-      return res.status(400).end()
-    }
-
-    res.status(200).json({ data: user.feedBacks })
-  } catch (e) {
-    console.error(e)
-    res.status(400).end()
+    res.status(400).send({ message: 'User not found' })
   }
 }
