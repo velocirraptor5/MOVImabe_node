@@ -6,9 +6,11 @@ import cors from 'cors'
 import { connect } from './utils/db'
 import userRouter from './resources/user/user.router'
 import feedbackRouter from './resources/feedBack/fbk.router'
-// import itemRouter from './resources/item/item.router'
+import routeRouter from './resources/route/route.router'
+import charmanderRouter from './resources/user/charmander/charmander.router'
 // import listRouter from './resources/list/list.router'
-import { signin, signup, protect, checkCharmander, deleteUser, resetPasswordByAdmin } from './utils/auth'  // <--- import auth functions
+import { signin, signup, protect, verifyToken, newToken } from './utils/auth'
+import { getMany } from './resources/user/user.controllers'
 
 export const app = express()
 
@@ -21,17 +23,25 @@ app.use(morgan('dev'))
 
 app.post('/signin', signin)
 app.post('/signup', signup)
+app.post('/verify', protect, async (req, res) => {
+  try {
+    const token = await newToken(req.user)
+    res.status(201).send({ token })
+  } catch (e) {
+    res.status(401).end()
+  }
+})
 
 app.use('/api', protect)  // <--- protect all routes below
 app.use('/api/user', userRouter)
 app.use('/api/feedBack', feedbackRouter)
+app.use('/api/route', routeRouter)
 // app.use('/api/item', itemRouter)
 // app.use('/api/list', listRouter)
 
-// charmander api
-app.use('/api/charmander', checkCharmander)  // <--- protect this route
-app.post('/api/charmander/reset-user-password', resetPasswordByAdmin)
-app.delete('/api/charmander/delete-user', deleteUser)
+// charmander are rhe admin routes
+app.use('/api/charmander', charmanderRouter)  // <--- protect this route
+
 
 
 export const start = async () => {
