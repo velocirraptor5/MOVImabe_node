@@ -11,6 +11,7 @@ import charmanderRouter from './resources/user/charmander/charmander.router'
 // import listRouter from './resources/list/list.router'
 import { signin, signup, protect, verifyToken, newToken } from './utils/auth'
 import { getMany } from './resources/user/user.controllers'
+import { User } from './resources/user/user.model'
 
 export const app = express()
 
@@ -25,8 +26,9 @@ app.post('/signin', signin)
 app.post('/signup', signup)
 app.post('/verify', protect, async (req, res) => {
   try {
-    const token = await newToken(req.user)
-    res.status(201).send({ token })
+    const user = await User.findOne({ email: req.user.email })
+    const token = newToken(user)
+    return res.status(201).send({ token })
   } catch (e) {
     res.status(401).end()
   }
