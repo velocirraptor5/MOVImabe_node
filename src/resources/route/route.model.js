@@ -47,6 +47,6 @@ const routeSchema = new moongose.Schema(
   { timestamps: true }
 );
 
-routeSchema.index({ salida: 1, llegada: 1, fecha: 1 }, { unique: true });
+routeSchema.index({ createdBy: 1, salida: 1, llegada: 1, fecha: 1 }, { unique: true });
 
 export const Route = moongose.model('route', routeSchema);

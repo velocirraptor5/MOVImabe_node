@@ -74,4 +74,8 @@ userSchema.methods.checkPassword = function (password) {
   })
 }
 
+userSchema.index({ email: 1 }, { unique: true })
+
+userSchema.index({ nikname: 1 }, { unique: true })
+
 export const User = mongoose.model('user', userSchema)
