@@ -6,13 +6,13 @@ export const getOne = model => async (req, res) => {
       .exec()
 
     if (!doc) {
-      return res.status(400).end()
+      return res.status(400).send({ message: 'Error fetching ' })
     }
 
     res.status(200).json({ data: doc })
   } catch (e) {
     console.error(e)
-    res.status(400).end()
+    res.status(400).send({ message: e.message })
   }
 }
 
@@ -26,7 +26,7 @@ export const getMany = model => async (req, res) => {
     res.status(200).json({ data: docs })
   } catch (e) {
     console.error(e)
-    res.status(400).end()
+    res.status(400).send({ message: e.message })
   }
 }
 
@@ -37,7 +37,7 @@ export const createOne = model => async (req, res) => {
     res.status(201).json({ data: doc })
   } catch (e) {
     console.error(e)
-    res.status(400).end()
+    res.status(400).send({ message: e.message })
   }
 }
 
