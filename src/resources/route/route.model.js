@@ -38,6 +38,19 @@ const routeSchema = new moongose.Schema(
       trim: true,
       maxlength: 50
     },
+    vehiculo: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 50
+      default: 'Ajeno'
+    },
+    fecha2: {
+      type: Date,
+      required: false,
+      trim: true,
+      maxlength: 50
+    },
     createdBy: {
       type: moongose.SchemaTypes.ObjectId,
       ref: 'user',
