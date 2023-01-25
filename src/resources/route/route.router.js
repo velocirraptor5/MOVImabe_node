@@ -1,5 +1,5 @@
 import { Router } from "express";
-import controllers, { getManyByUser } from "./route.controllers";
+import controllers, { getManyByUser, getManyRecurrentesByUser } from "./route.controllers";
 
 const router = Router();
 
@@ -8,6 +8,11 @@ router
   .route("/")
   .get(getManyByUser)
   .post(controllers.createOne);
+
+// /api/route/recurrente
+router.route("/recurrente")
+  .get(getManyRecurrentesByUser);
+
 
 // /api/route/:id
 router
