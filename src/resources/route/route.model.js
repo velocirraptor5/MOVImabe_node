@@ -14,7 +14,7 @@ const routeSchema = new moongose.Schema(
       trim: true,
       maxlength: 50
     },
-    description: {
+    descripcion: {
       type: String,
       required: false,
       trim: true,
