@@ -36,7 +36,8 @@ const routeSchema = new moongose.Schema(
       type: Boolean,
       required: true,
       trim: true,
-      maxlength: 50
+      maxlength: 50,
+      default: false
     },
     vehiculo: {
       type: String,
