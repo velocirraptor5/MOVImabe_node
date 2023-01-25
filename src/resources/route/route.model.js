@@ -42,7 +42,7 @@ const routeSchema = new moongose.Schema(
       type: String,
       required: true,
       trim: true,
-      maxlength: 50
+      maxlength: 50,
       default: 'Ajeno'
     },
     fecha2: {
