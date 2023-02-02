@@ -24,7 +24,7 @@ export const updateOne = async (data) => {
     const updatedDoc = await PublicRoute
       .findOneAndUpdate(
         search,
-        data.body,
+        data.body.newroute,
         { new: true }
       )
       .lean()

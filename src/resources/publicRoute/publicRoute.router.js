@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOne, removeOne, updateOne } from "./publicRoute.controllers";
+import { createOne, getMany, getOne, removeOne, updateOne } from "./publicRoute.controllers";
 
 const router = Router();
 import expressWs from 'express-ws'
