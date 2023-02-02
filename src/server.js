@@ -8,6 +8,7 @@ import userRouter from './resources/user/user.router'
 import feedbackRouter from './resources/feedBack/fbk.router'
 import routeRouter from './resources/route/route.router'
 import charmanderRouter from './resources/user/charmander/charmander.router'
+import publicRouteRouter from './resources/publicRoute/publicRoute.router'
 // import listRouter from './resources/list/list.router'
 import { signin, signup, protect, verifyToken, newToken } from './utils/auth'
 import { getMany } from './resources/user/user.controllers'
@@ -15,6 +16,9 @@ import { User } from './resources/user/user.model'
 
 export const app = express()
 
+import expressWs from 'express-ws'
+
+const ws = expressWs(app)
 app.disable('x-powered-by')
 
 app.use(cors())
@@ -38,11 +42,14 @@ app.use('/api', protect)  // <--- protect all routes below
 app.use('/api/user', userRouter)
 app.use('/api/feedBack', feedbackRouter)
 app.use('/api/route', routeRouter)
+app.use('/api/publicRoute', publicRouteRouter)
 // app.use('/api/item', itemRouter)
 // app.use('/api/list', listRouter)
 
 // charmander are rhe admin routes
 app.use('/api/charmander', charmanderRouter)  // <--- protect this route
+
+
 
 
 
