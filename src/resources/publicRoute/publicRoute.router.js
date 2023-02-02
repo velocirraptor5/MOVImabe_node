@@ -3,6 +3,7 @@ import { createOne, removeOne, updateOne } from "./publicRoute.controllers";
 
 const router = Router();
 import expressWs from 'express-ws'
+import { type } from "express/lib/response";
 
 const ws = expressWs(router)
 
@@ -49,46 +50,65 @@ router.ws('/', (s, req) => {
     data.payload.user = req.user;
 
     if (data.type === 'create') {
-      s.send('creating');
+      s.send(JSON.stringify({ type: 'creating' }));
       createOne(data.payload).then((doc) => {
         console.log('doc', doc);
-        s.send(JSON.stringify(doc));
+        s.send(JSON.stringify({
+          type: 'created',
+          payload: doc
+        }));
       })
 
     }
 
     if (data.type === 'update') {
-      s.send('updating');
+      s.send(JSON.stringify({ type: 'updating' }));
       updateOne(data.payload).then((doc) => {
         console.log('doc', doc);
-        s.send(JSON.stringify(doc));
+        s.send(JSON.stringify({
+          type: 'updated',
+          payload: doc
+        })
+        );
       }
       )
     }
 
     if (data.type === 'remove') {
-      s.send('deleting');
+      s.send(JSON.stringify({ type: 'removing' }));
       removeOne(data.payload).then((doc) => {
         console.log('doc', doc);
-        s.send(JSON.stringify(doc));
+        s.send(JSON.stringify({
+          type: 'removed',
+          payload: doc
+        })
+        );
       }
       )
     }
 
     if (data.type === 'get') {
-      s.send('getting');
+      s.send(JSON.stringify({ type: 'getting' }));
       getOne(data.payload).then((doc) => {
         console.log('doc', doc);
-        s.send(JSON.stringify(doc));
+        s.send(JSON.stringify({
+          type: 'got',
+          payload: doc
+        })
+        );
       }
       )
     }
 
     if (data.type === 'getMany') {
-      s.send('getting many');
+      s.send(JSON.stringify({ type: 'gettingMany' }));
       getMany().then((doc) => {
         console.log('doc', doc);
-        s.send(JSON.stringify(doc));
+        s.send(JSON.stringify({
+          type: 'gotMany',
+          payload: doc
+        })
+        );
       }
       )
     }
