@@ -28,7 +28,7 @@ const routeSchema = new moongose.Schema(
     },
     cupos: {
       type: Number,
-      required: true,
+      required: false,
       trim: true,
       maxlength: 50
     },
