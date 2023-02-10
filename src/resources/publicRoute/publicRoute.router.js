@@ -6,7 +6,7 @@ import expressWs from 'express-ws'
 import { type } from "express/lib/response";
 
 const ws = expressWs(router)
-const viajes = new Map();
+const publicViajes = new Map();
 
 // router.get('/', (req, res) => {
 //   console.error('express connection');
@@ -60,7 +60,7 @@ router.ws('/', (s, req) => {
             type: 'created',
             payload: doc
           }));
-          viajes.set(doc._id.toString(), s);
+          publicViajes.set(doc._id.toString(), s);
         })
         break;
 
@@ -118,118 +118,21 @@ router.ws('/', (s, req) => {
 
       case 'request seat':
         s.send(JSON.stringify({ type: 'requesting seat' }));
-        console.log('viajes', viajes);
-        const viajeId = data.payload.body.id;
-        console.log('viajeID', viajeId);
-        console.log('type viajeID', typeof viajeId);
-        const viaje = viajes.get(viajeId);
-        viajes.forEach((v, k) => {
-          console.log('k', k);
-          console.log('type k ', typeof k);
-          console.log('v', v);
-        })
-        console.log('viaje', viaje);
-        console.log('viajeID', viajeId);
-        if (viaje) {
-          viaje.send(JSON.stringify({
+        const publicViajeId = data.payload.body.id;
+        const wsPublicViaje = publicViajes.get(publicViajeId);
+        if (wsPublicViaje) {
+          wsPublicViaje.send(JSON.stringify({
             type: 'request seat',
-            payload: data.payload
+            payload: {
+              _id: data.payload.user._id,
+              nikname: data.payload.user.nikname,
+              email: data.payload.user.email
+            }
+          }
           }));
         }
       default:
-        break;
+break;
     }
-    // if (data.type === 'close') {
-    //   s.close();
-    // }
-    // if (data.type === 'error') {
-    //   s.error();
-    // }
-
-
-    // if (data.type === 'create') {
-    //   s.send(JSON.stringify({ type: 'creating' }));
-    //   createOne(data.payload).then((doc) => {
-    //     console.log('doc', doc);
-    //     s.send(JSON.stringify({
-    //       type: 'created',
-    //       payload: doc
-    //     }));
-    //   })
-
-    // }
-
-    // if (data.type === 'update') {
-    //   s.send(JSON.stringify({ type: 'updating' }));
-    //   updateOne(data.payload).then((doc) => {
-    //     console.log('doc', doc);
-    //     s.send(JSON.stringify({
-    //       type: 'updated',
-    //       payload: doc
-    //     })
-    //     );
-    //   }
-    //   )
-    // }
-
-    // if (data.type === 'remove') {
-    //   s.send(JSON.stringify({ type: 'removing' }));
-    //   removeOne(data.payload).then((doc) => {
-    //     console.log('doc', doc);
-    //     s.send(JSON.stringify({
-    //       type: 'removed',
-    //       payload: doc
-    //     })
-    //     );
-    //   }
-    //   )
-    // }
-
-    // if (data.type === 'get') {
-    //   s.send(JSON.stringify({ type: 'getting' }));
-    //   getOne(data.payload).then((doc) => {
-    //     console.log('doc', doc);
-    //     s.send(JSON.stringify({
-    //       type: 'got',
-    //       payload: doc
-    //     })
-    //     );
-    //   }
-    //   )
-    // }
-
-    // if (data.type === 'getMany') {
-    //   s.send(JSON.stringify({ type: 'gettingMany' }));
-    //   getMany().then((doc) => {
-    //     console.log('doc', doc);
-    //     s.send(JSON.stringify({
-    //       type: 'gotMany',
-    //       payload: doc
-    //     })
-    //     );
-    //   }
-    //   )
-    // }
-
-    // console.log('socket message', msg);
-    // s.send('hello');
-  }
-
-});
-
-// // api/publicRoute
-
-// router
-//   .route("/")
-//   .get(controllers.getMany)
-//   .post(controllers.createOne)
-
-// // api/publicRoute/:id
-
-// router
-//   .route("/")
-//   .get(controllers.getOne)
-//   .put(controllers.updateOne)
-//   .delete(controllers.removeOne)
 
 export default router
