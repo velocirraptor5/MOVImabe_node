@@ -117,7 +117,7 @@ export const getMany = async () => {
 
 export const getRoute = async (data) => {
   try {
-    const doc = await Route.find({ _id: data }).lean().exec()
+    const doc = await Route.findOne({ _id: data }).lean().exec()
     if (!doc) {
       return { message: 'Error getting' }
     }
