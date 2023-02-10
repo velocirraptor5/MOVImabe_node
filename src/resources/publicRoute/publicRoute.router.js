@@ -22,7 +22,10 @@ router.ws('/', (s, req) => {
   s.onmessage = (msg) => {
     console.log('socket message', msg);
 
-
+    if (msg.data === 'ping') {
+      s.send('pong');
+      return
+    }
     try {
       JSON.parse(msg.data);
     } catch (e) {
