@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOne, getMany, getOne, removeOne, updateOne } from "./publicRoute.controllers";
+import { createOne, getMany, getOne, getRoute, removeOne, updateOne } from "./publicRoute.controllers";
 
 const router = Router();
 import expressWs from 'express-ws'
@@ -120,24 +120,28 @@ router.ws('/', (s, req) => {
         s.send(JSON.stringify({ type: 'requesting seat' }));
         const publicViajeId = data.payload.body.id;
         const wsPublicViaje = publicViajes.get(publicViajeId);
-        if (wsPublicViaje) {
-          wsPublicViaje.send(JSON.stringify({
-            type: 'request seat',
-            payload: {
-              _id: data.payload.user._id,
-              nikname: data.payload.user.nikname,
-              email: data.payload.user.email
-            }
-          }));
-        }
-        else {
-          s.send(JSON.stringify({
-            type: 'request seat',
-            payload: {
-              message: 'no existe el viaje'
-            }
-          }));
-        }
+        const routeID = data.payload.body.route;
+        getRoute(routeID).then((doc) => {
+          if (wsPublicViaje) {
+            wsPublicViaje.send(JSON.stringify({
+              type: 'request seat',
+              payload: {
+                _id: data.payload.user._id,
+                nikname: data.payload.user.nikname,
+                email: data.payload.user.email,
+                route: doc?.data
+              }
+            }));
+          }
+          else {
+            s.send(JSON.stringify({
+              type: 'request seat',
+              payload: {
+                message: 'no existe el viaje'
+              }
+            }));
+          }
+        })
         break;
 
       default:

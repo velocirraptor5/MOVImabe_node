@@ -115,3 +115,18 @@ export const getMany = async () => {
   }
 }
 
+export const getRoute = async (data) => {
+  try {
+    const doc = await Route.find({ _id: data }).lean().exec()
+    if (!doc) {
+      return { message: 'Error getting' }
+    }
+    return { data: doc }
+
+  }
+  catch (e) {
+    console.error(e)
+    return { message: e.message }
+  }
+}
+
