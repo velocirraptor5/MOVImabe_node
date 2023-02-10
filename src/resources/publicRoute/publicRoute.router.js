@@ -128,11 +128,23 @@ router.ws('/', (s, req) => {
               nikname: data.payload.user.nikname,
               email: data.payload.user.email
             }
-          }
           }));
         }
+        else {
+          s.send(JSON.stringify({
+            type: 'request seat',
+            payload: {
+              message: 'no existe el viaje'
+            }
+          }));
+        }
+        break;
+
       default:
-break;
+        break;
     }
+  }
+});
+
 
 export default router
