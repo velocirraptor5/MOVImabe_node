@@ -7,7 +7,7 @@ export const createOne = async (data) => {
   const createdBy = data.user._id
   try {
     console.log('data', data);
-    const doc = await PublicRoute.create({ ...data.body, createdBy })
+    const doc = await PublicRoute.create({ ...data.body, createdBy: createdBy })
     return doc
   } catch (e) {
     console.error(e)
@@ -71,11 +71,10 @@ export const getOne = async (data) => {
     doc.route = route
 
     const user = await User.findOne({ _id: doc.createdBy }).lean().exec()
-    doc.createdBy = user
+    doc.createdBy = { nikname: user.nikname, email: user.email }
 
     const passengers = await User.find({ _id: { $in: doc.passengers } }).lean().exec()
-    doc.passengers = passengers
-
+    doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email }))
 
     return { data: doc }
   } catch (e) {
@@ -91,18 +90,22 @@ export const getMany = async () => {
       return { message: 'Error getting' }
     }
 
-    const routes = await Route.find().lean().exec()
-    const users = await User.find().lean().exec()
+    const routes = await Route.find(
+      { _id: { $in: docs.map(doc => doc.route) } }
+    ).lean().exec()
+    const users = await User.find(
+      { _id: { $in: docs.map(doc => doc.createdBy).concat(docs.map(doc => doc.passengers).flat()) } }
+    ).lean().exec()
 
     docs.forEach(doc => {
       const route = routes.find(route => route._id.toString() === doc.route.toString())
       doc.route = route
 
       const user = users.find(user => user._id.toString() === doc.createdBy.toString())
-      doc.createdBy = user
+      doc.createdBy = { nikname: user.nikname, email: user.email }
 
       const passengers = users.filter(user => doc.passengers.includes(user._id.toString()))
-      doc.passengers = passengers
+      doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email }))
     })
 
     return { data: docs }
