@@ -74,7 +74,10 @@ export const getOne = async (data) => {
     doc.createdBy = { nikname: user.nikname, email: user.email }
 
     const passengers = await User.find({ _id: { $in: doc.passengers } }).lean().exec()
-    doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email }))
+    doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email, _id: passenger._id }))
+
+    const passengersRoute = await Route.findOne({ _id: doc.passengersRoute }).lean().exec()
+    doc.passengersRoute = passengersRoute
 
     return { data: doc }
   } catch (e) {
@@ -91,7 +94,7 @@ export const getMany = async () => {
     }
 
     const routes = await Route.find(
-      { _id: { $in: docs.map(doc => doc.route) } }
+      { _id: { $in: docs.map(doc => doc.route).concat(docs.map(doc => doc.passengersRoute).flat()) } }
     ).lean().exec()
     const users = await User.find(
       { _id: { $in: docs.map(doc => doc.createdBy).concat(docs.map(doc => doc.passengers).flat()) } }
@@ -104,8 +107,11 @@ export const getMany = async () => {
       const user = users.find(user => user._id.toString() === doc.createdBy.toString())
       doc.createdBy = { nikname: user.nikname, email: user.email }
 
-      const passengers = users.filter(user => doc.passengers.includes(user._id.toString()))
-      doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email }))
+      const passengers = users.filter(user => doc.passengers.map(passenger => passenger.toString()).includes(user._id.toString()))
+      doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email, _id: passenger._id }))
+
+      const passengersRoute = routes.find(route => route._id.toString() === doc.passengersRoute.toString())
+      doc.passengersRoute = passengersRoute
     })
 
     return { data: docs }

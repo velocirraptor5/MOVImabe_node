@@ -13,6 +13,12 @@ const publicRouteSchema = new moongose.Schema(
       required: true,
       default: []
     },
+    passengersRoute: {
+      type: [moongose.SchemaTypes.ObjectId],
+      ref: 'route',
+      required: true,
+      default: []
+    },
     createdBy: {
       type: moongose.SchemaTypes.ObjectId,
       ref: 'user',
