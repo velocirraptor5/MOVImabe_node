@@ -76,7 +76,7 @@ export const getOne = async (data) => {
     const passengers = await User.find({ _id: { $in: doc.passengers } }).lean().exec()
     doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email, _id: passenger._id }))
 
-    const passengersRoute = await Route.findOne({ _id: doc.passengersRoute }).lean().exec()
+    const passengersRoute = await Route.find({ _id: doc.passengersRoute }).lean().exec()
     doc.passengersRoute = passengersRoute
 
     return { data: doc }
@@ -110,7 +110,7 @@ export const getMany = async () => {
       const passengers = users.filter(user => doc.passengers.map(passenger => passenger.toString()).includes(user._id.toString()))
       doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email, _id: passenger._id }))
 
-      const passengersRoute = routes.find(route => route._id.toString() === doc.passengersRoute.toString())
+      const passengersRoute = routes.filter(route => doc.passengersRoute.map(passengerRoute => passengerRoute.toString()).includes(route._id.toString()))
       doc.passengersRoute = passengersRoute
     })
 
