@@ -7,16 +7,20 @@ import { type } from "express/lib/response";
 
 const ws = expressWs(router)
 const publicViajes = new Map();
+const connections = new Map();
 
-// router.get('/', (req, res) => {
-//   console.error('express connection');
-//   res.send('hello world');
-// });
 router.ws('/', (s, req) => {
+
+  connections.set(req.user._id.toString(), s);
+
   s.send('conectado mi pana ');
   // console.log('socket connection mi pana');
   s.onopen = () => console.log('socket opened');
-  s.onclose = () => console.log('socket closed');
+  s.onclose = () => {
+    console.log('socket closed');
+    connections.delete(req.user._id.toString());
+  };
+
   s.onerror = () => console.log('socket error');
 
   s.onmessage = (msg) => {
@@ -71,13 +75,14 @@ router.ws('/', (s, req) => {
         s.send(JSON.stringify({ type: 'updating' }));
         updateOne(data.payload).then((doc) => {
           console.log('doc', doc);
-          s.send(JSON.stringify({
-            type: 'updated',
-            payload: doc
-          })
-          );
-        }
-        )
+          connections.forEach((s, id) => {
+            s.send(JSON.stringify({
+              type: 'updated',
+              payload: doc
+            }));
+          }
+          )
+        });
         break;
 
       case 'remove':
