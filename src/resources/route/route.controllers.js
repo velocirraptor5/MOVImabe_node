@@ -32,3 +32,17 @@ export const getManyRecurrentesByUser = async (req, res) => {
     res.status(400).end()
   }
 }
+
+export const getManyByType = async (req, res) => {
+  try {
+    const docs = await Route
+      .find({ vehiculo: req.params.type })
+      .lean()
+      .exec()
+
+    res.status(200).json({ data: docs })
+  } catch (e) {
+    console.error(e)
+    res.status(400).end()
+  }
+}
