@@ -18,14 +18,7 @@ export const createOne = async (data) => {
 export const updateOne = async (data) => {
   try {
     const charmander = data.user.role === 'charmander'
-    const search = charmander ?
-      { _id: data.body.id } :
-      {
-        _id: data.body.id, $or: [
-          { createdBy: data.user._id },
-          { passengers: { $in: [data.user._id] } },
-        ]
-      }
+    const search = { _id: data.body.id }
     const updatedDoc = await PublicRoute
       .findOneAndUpdate(
         search,
