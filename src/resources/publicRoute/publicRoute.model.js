@@ -28,6 +28,6 @@ const publicRouteSchema = new moongose.Schema(
   { timestamps: true }
 )
 
-publicRouteSchema.index({ createdBy: 1 }, { unique: true })
+// publicRouteSchema.index({ createdBy: 1 }, { unique: true })
 
 export const PublicRoute = moongose.model('publicRoute', publicRouteSchema)

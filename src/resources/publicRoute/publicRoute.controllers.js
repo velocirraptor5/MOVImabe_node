@@ -115,7 +115,7 @@ export const getMany = async () => {
       const passengers = users.filter(user => doc.passengers.map(passenger => passenger.toString()).includes(user._id.toString()))
       doc.passengers = passengers.map(passenger => ({ nikname: passenger.nikname, email: passenger.email, _id: passenger._id }))
 
-      const passengersRoute = routes.filter(route => doc.passengersRoute.map(passengerRoute => passengerRoute.toString()).includes(route._id.toString()))
+      const passengersRoute = routes.filter(route => doc.passengersRoute.map(passengerRoute => passengerRoute?.toString()).includes(route._id?.toString()))
       doc.passengersRoute = passengersRoute
     })
 
