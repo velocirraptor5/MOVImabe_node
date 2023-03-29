@@ -23,7 +23,7 @@ export const updateOne = async (data) => {
       {
         _id: data.body.id, $or: [
           { createdBy: data.user._id },
-          { passengers: data.user._id },
+          { passengers: { $in: [data.user._id] } },
         ]
       }
     const updatedDoc = await PublicRoute
